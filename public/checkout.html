@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Accept a payment</title>
+    <meta name="description" content="A demo of a payment on Stripe" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- <link rel="stylesheet" href="checkout.css" /> -->
+    <title>Checkout</title>
+    <!-- Stylesheets -->
+    <link
+      href="https://carboneraexchange.com/css/bootstrap.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://carboneraexchange.com/css/revolution-slider.css"
+      rel="stylesheet"
+    />
+    <link href="https://carboneraexchange.com/css/style.css" rel="stylesheet" />
+
+    <!-- Responsive -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+    />
+    <link
+      href="https://carboneraexchange.com/css/responsive.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+  </head>
+  <body>
+    <div
+      class="modal fade pop-box in"
+      id="donate-popup"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="donate-popup"
+      aria-hidden="false"
+      style="display: contents"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <!--Donation Section-->
+          <section class="donation-section">
+            <div class="donation-form-outer">
+              <!--Form Portlet-->
+              <div class="form-portlet">
+                <h3>How Many Offsets Would you like to Purchase?</h3>
+
+                <div class="row clearfix">
+                  <!-- New Code -->
+                  <div class="form-group col-lg-6 col-md-6 col-xs-12">
+                    <div class="field-label">
+                      Source <span class="required">*</span>
+                    </div>
+                    <input
+                      type="text"
+                      name="source"
+                      placeholder="DEl"
+                      required=""
+                      list="source"
+                      id="sourceInput"
+                    />
+                    <datalist id="source"> </datalist>
+                  </div>
+
+                  <div class="form-group col-lg-6 col-md-6 col-xs-12">
+                    <div class="field-label">
+                      Destination <span class="required">*</span>
+                    </div>
+                    <input
+                      type="text"
+                      name="destination"
+                      placeholder="JAI"
+                      required=""
+                      list="destination"
+                      id="destinationInput"
+                    />
+                    <datalist id="destination"> </datalist>
+                  </div>
+
+                  
+                  <h3 id="carbonAmount" class="no-margin-bottom"></h3>
+                  <h4 id="carbonDetails" class="no-margin-bottom"></h4>
+                  <!-- inc / dec buttons -->
+                  <div id="actionBtns" class="row hide">
+                    <div class="col-lg-4 col-md-4 col-xs-4">
+                      <h4>
+                        <button
+                          class="theme-btn btn-style-two btn-block theme-3"
+                          onclick="changeOffsetValue('dec')"
+                        >
+                          <i class="fa-solid fa-minus"></i>
+                        </button>
+                      </h4>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-xs-4 centered">
+                      <input
+                      id="totalOffset"
+                      class="centered"
+                      type="text"
+                      name="destination"
+                      placeholder="Total Offsets"
+                      value="-1"
+                      disabled
+                    />
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-xs-4">
+                      <h4>
+                        <button
+                          class="theme-btn btn-style-two btn-block theme-3"
+                          onclick="changeOffsetValue('inc')"
+                        >
+                          <i class="fa-solid fa-plus"></i>
+                        </button>
+                      </h4>
+                    </div>
+                  </div>
+
+                  <div class="text-left margin-top-20">
+                    <button
+                      id="calculateBtn"
+                      class="theme-btn btn-style-two btn-block theme-3"
+                    >
+                      <span id="button-text">Calculate</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <br />
+
+              <!--Form Portlet-->
+
+              <form id="payment-form" style="display: none">
+                <div class="form-portlet">
+                  <h4>Billing Information</h4>
+
+                  <div class="row clearfix">
+                    <div class="form-group col-lg-6 col-md-6 col-xs-12">
+                      <div class="field-label">
+                        First Name <span class="required">*</span>
+                      </div>
+                      <input
+                        type="text"
+                        name="firstname"
+                        value=""
+                        placeholder="First Name"
+                        required=""
+                      />
+                    </div>
+
+                    <div class="form-group col-lg-6 col-md-6 col-xs-12">
+                      <div class="field-label">
+                        Last Name <span class="required">*</span>
+                      </div>
+                      <input
+                        type="text"
+                        name="lastname"
+                        value=""
+                        placeholder="Last Name"
+                        required=""
+                      />
+                    </div>
+
+                    <div class="form-group col-lg-6 col-md-6 col-xs-12">
+                      <div class="field-label">
+                        Phone <span class="required">*</span>
+                      </div>
+                      <input
+                        type="text"
+                        name="phone"
+                        value=""
+                        placeholder="Phone"
+                        required=""
+                      />
+                    </div>
+
+                    <div class="form-group col-lg-6 col-md-6 col-xs-12">
+                      <div class="field-label">
+                        Address 1 <span class="required">*</span>
+                      </div>
+                      <input
+                        type="text"
+                        name="address1"
+                        value=""
+                        placeholder="Address 1"
+                        required=""
+                      />
+                    </div>
+
+                    <div class="form-group col-lg-6 col-md-6 col-xs-12">
+                      <div class="field-label">
+                        Address 2 <span class="required">*</span>
+                      </div>
+                      <input
+                        type="text"
+                        name="address2"
+                        value=""
+                        placeholder="Address 2"
+                        required=""
+                      />
+                    </div>
+
+                    <div class="form-group col-lg-6 col-md-6 col-xs-12">
+                      <div class="field-label">
+                        Zipcode <span class="required">*</span>
+                      </div>
+                      <input
+                        type="text"
+                        name="zipcode"
+                        value=""
+                        placeholder="Zipcode"
+                        required=""
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <br />
+                <div id="link-authentication-element">
+                  <!--Stripe.js injects the Link Authentication Element-->
+                </div>
+                <div id="payment-element">
+                  <!--Stripe.js injects the Payment Element-->
+                </div>
+                <button
+                  id="submit"
+                  class="theme-btn btn-style-two margin-top-20"
+                >
+                  <div class="spinner hidden" id="spinner"></div>
+                  <span id="button-text">Buy Offsets</span>
+                </button>
+                <div id="payment-message" class="hidden"></div>
+              </form>
+            </div>
+          </section>
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+    </div>
+
+    <!-- Scripts -->
+    <script src="checkout.js" defer></script>
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="https://carboneraexchange.com/js/jquery.js"></script>
+    <script src="https://carboneraexchange.com/js/bootstrap.min.js"></script>
+    <script src="https://carboneraexchange.com/js/revolution.min.js"></script>
+    <script src="https://carboneraexchange.com/js/jquery.fancybox.pack.js"></script>
+    <script src="https://carboneraexchange.com/js/jquery.fancybox-media.js"></script>
+    <script src="https://carboneraexchange.com/js/owl.js"></script>
+    <script src="https://carboneraexchange.com/js/wow.js"></script>
+    <script src="https://carboneraexchange.com/js/script.js"></script>
+  </body>
+</html>
